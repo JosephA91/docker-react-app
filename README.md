@@ -1,70 +1,123 @@
 # Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Docker commands
 
-## Available Scripts
+#### build the image
 
-In the project directory, you can run:
+`docker build -t react-app .`
 
-### `yarn start`
+#### run the server
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+`docker run -p 3000:3000 react-app npm start`
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+#### run the image in shell
 
-### `yarn test`
+`docker run -it react-app sh`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#### get current user
 
-### `yarn build`
+`whoami`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### view docker images
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+`docker images`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+#### build with tag
 
-### `yarn eject`
+`docker build -t react-app:1 .`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+#### tag after
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+`docker image tag react-app:latest react-app:1`
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+#### tag to latest
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+`docker image tag react-app:1 react-app:latest`
 
-## Learn More
+#### build, tag and push image to docker hub
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+``` bash
+docker build -t react-app:3 .
+docker image tag react=app:3 artofthesystem/react-app:3
+docker push artofthesystem/react-app:3
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+#### save to a tar file
 
-### Code Splitting
+`docker image save -o react-app.tar react-app:3`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+#### remove docker image
 
-### Analyzing the Bundle Size
+`docker image rm <image_name or image_id>`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+#### load from a file from tar file
 
-### Making a Progressive Web App
+`docker image load -i react-app.tar`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+#### run detached mode
 
-### Advanced Configuration
+`docker run -d react-app`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+#### run detached mode with name
 
-### Deployment
+`docker run -d --name blue-sky-app react-app`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+#### logs
 
-### `yarn build` fails to minify
+`docker logs <container_id>`
+`docker logs -n 5 -t 6fd9b06b36ed`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+number of lines to tail (-n 5) and include timestamp (-5)
+
+`docker run -d -p 3000:3000 --name c1 react-app`
+
+#### execute commands against a runnign conatiner
+
+`docker exec c1 ls`
+`docker exec -it c1 sh`
+
+#### stop a container
+
+`docker stop <container_name> or <container_id>`
+
+#### start a container
+
+`docker start <container_name> or <container_id>`
+
+#### docker volumes
+
+#### create
+
+`docker volume create <volume_name>`
+
+#### inspect
+
+`docker volume inspect <volume_name>`
+
+`docker run -d -p 4000:3000 -v app-data:/app/data react-app`
+`docker exec -it 706 sh`
+
+#### Copy a file from container to host
+
+`docker cp <container_id>:/app/log.txt .`
+
+#### Copy a file from host to container
+
+`echo hello > file.txt`
+`docker cp file.txt <container_id>:/app`
+
+#### Mapping to local file directory
+
+`docker run -d -p 5001:3000 -v $(pwd):/app react-app`
+
+##### With another volume:
+
+`docker run -d -p 5001:3000 -v $(pwd):/app -v app-data:/app/data react-app`
+
+#### Remove all containers (inc. running ones)
+
+`docker container rm -f $(docker container ls -aq)`
+
+#### Remove all images
+
+`docker image rm -f $(docker image ls -q)`
